@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="btn primary" href="/tambah">+ Tambah Mahasiswa</a>
+<table>
+  <tr>
+    <th>NIM</th><th>Nama</th><th>Program Studi</th><th>Angkatan</th>
+    <th>IPK</th><th>Lama Studi (tahun)</th><th>Aksi</th>
+  </tr>
+  {% for m in mahasiswa %}
+  <tr>
+    <td>{{ m.nim }}</td>
+    <td>{{ m.nama }}</td>
+    <td>{{ m.program_studi }}</td>
+    <td>{{ m.angkatan }}</td>
+    <td>{{ "%.2f"|format(m.ipk) }}</td>
+    <td>{{ m.lama_studi }}</td>
+    <td>
+      <a class="btn" href="/detail/{{ m.nim }}">Detail</a>
+      <a class="btn" href="/edit/{{ m.nim }}">Edit</a>
+      <form class="inline" method="post" action="/hapus/{{ m.nim }}"
+            onsubmit="return confirm('Yakin hapus data ini?');">
+        <button class="danger" type="submit">Hapus</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="7">Belum ada data mahasiswa.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
