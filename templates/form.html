@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ judul }}</h2>
+<form method="post">
+  <label>NIM</label>
+  <input type="text" name="nim" value="{{ m.get('nim', '') }}" {% if edit %}readonly{% endif %}>
+
+  <label>Nama</label>
+  <input type="text" name="nama" value="{{ m.get('nama', '') }}">
+
+  <label>Program Studi</label>
+  <input type="text" name="program_studi" value="{{ m.get('program_studi', '') }}">
+
+  <label>Angkatan</label>
+  <input type="text" name="angkatan" value="{{ m.get('angkatan', '') }}">
+
+  <label>IPK (0.00 - 4.00)</label>
+  <input type="text" name="ipk" value="{{ m.get('ipk', '') }}">
+
+  <p>
+    <button type="submit" class="btn primary">Simpan</button>
+    <a class="btn" href="/">Batal</a>
+  </p>
+</form>
+{% endblock %}

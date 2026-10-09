@@ -97,7 +97,30 @@ def index():
     return render_template("index.html", mahasiswa=mahasiswa)
 
 
-# (route baru nanti ditambahkan DI ATAS baris if __name__ di bawah ini)
+# # ---------- CREATE ----------
+@app.route("/tambah", methods=["GET", "POST"])
+def tambah():
+    if request.method == "POST":
+        data, errors = validasi(request.form)
+        db = get_db()
+        if not errors:
+            ada = db.execute("SELECT 1 FROM mahasiswa WHERE nim = ?",
+                             (data["nim"],)).fetchone()
+            if ada:
+                errors.append(f"NIM {data['nim']} sudah terdaftar.")
+        if errors:
+            for e in errors:
+                flash(e, "error")
+            return render_template("form.html", judul="Tambah Mahasiswa",
+                                   m=request.form, edit=False)
+        db.execute(
+            "INSERT INTO mahasiswa (nim, nama, program_studi, angkatan, ipk) VALUES (?, ?, ?, ?, ?)",
+            (data["nim"], data["nama"], data["program_studi"], data["angkatan"], data["ipk"]),
+        )
+        db.commit()
+        flash("Mahasiswa berhasil ditambahkan.", "success")
+        return redirect("/")
+    return render_template("form.html", judul="Tambah Mahasiswa", m={}, edit=False)(route baru nanti ditambahkan DI ATAS baris if __name__ di bawah ini)
 
 if __name__ == "__main__":
     init_db()
