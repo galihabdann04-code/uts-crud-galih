@@ -120,7 +120,7 @@ def tambah():
         db.commit()
         flash("Mahasiswa berhasil ditambahkan.", "success")
         return redirect("/")
-    return render_template("form.html", judul="Tambah Mahasiswa", m={}, edit=False)(route baru nanti ditambahkan DI ATAS baris if __name__ di bawah ini)
+    return render_template("form.html", judul="Tambah Mahasiswa", m={}, edit=False)
 
 if __name__ == "__main__":
     init_db()
