@@ -122,6 +122,47 @@ def tambah():
         return redirect("/")
     return render_template("form.html", judul="Tambah Mahasiswa", m={}, edit=False)
 
+    # ---------- DETAIL ----------
+@app.route("/detail/<int:nim>")
+def detail(nim):
+    row = get_db().execute("SELECT * FROM mahasiswa WHERE nim = ?", (nim,)).fetchone()
+    if row is None:
+        abort(404)
+    return render_template("detail.html", m=tambah_lama_studi(row))
+
+
+# ---------- UPDATE ----------
+@app.route("/edit/<int:nim>", methods=["GET", "POST"])
+def edit(nim):
+    db = get_db()
+    row = db.execute("SELECT * FROM mahasiswa WHERE nim = ?", (nim,)).fetchone()
+    if row is None:
+        abort(404)
+    if request.method == "POST":
+        data, errors = validasi(request.form)
+        if errors:
+            for e in errors:
+                flash(e, "error")
+            return render_template("form.html", judul="Edit Mahasiswa",
+                                   m=request.form, edit=True)
+        db.execute(
+            "UPDATE mahasiswa SET nama = ?, program_studi = ?, angkatan = ?, ipk = ? WHERE nim = ?",
+            (data["nama"], data["program_studi"], data["angkatan"], data["ipk"], nim),
+        )
+        db.commit()
+        flash("Data mahasiswa berhasil diubah.", "success")
+        return redirect("/")
+    return render_template("form.html", judul="Edit Mahasiswa", m=dict(row), edit=True)
+
+
+# ---------- DELETE ----------
+@app.route("/hapus/<int:nim>", methods=["POST"])
+def hapus(nim):
+    db = get_db()
+    db.execute("DELETE FROM mahasiswa WHERE nim = ?", (nim,))
+    db.commit()
+    flash("Data mahasiswa berhasil dihapus.", "success")
+    return redirect("/")
 if __name__ == "__main__":
     init_db()
     app.run(debug=True, port=5001)
